@@ -11,6 +11,38 @@ public_users.post("/register", (req,res) => {
     
     // Username and password - required by the body
     const {username, password} = req.body;
+
+    // What if the user already exists?
+    if (username.isValid === false)
+    {
+        // Return an error message
+        return res.status(400).json({message: `User already exists.`});
+    }
+
+    // What if the username is not provided?
+    else if (username === null)
+    {
+        // Return an error message
+        return res.status(400).json({message: `Username field cannot be left empty.`});
+    }
+
+    // What if the password is not provided?
+    else if (password === null)
+    {
+        // Return an error message
+        return res.status(400).json({message: `Password field cannot be left empty.`});
+    }
+
+    // But if they don't and the password field is not empty
+    else if (username.isValid === true | password != null) {
+        
+        users.push({
+        "username": req.query.username,
+        "password": req.query.password
+    });
+        // Return message of success
+        return res.status(200).json({message: username + " successfully added!"});
+    }
 });
 
 // Get the book list available in the shop

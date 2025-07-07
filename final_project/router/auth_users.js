@@ -7,6 +7,21 @@ let users = [];
 
 const isValid = (username)=>{ //returns boolean
   
+    // Cycle through the list of users
+    for (let key in users)
+    {
+        // If the key matches the name provided
+        if (users[key] === username)
+        {
+            // It is considered valid
+            users[key].isValid = true;
+        }
+
+        // But if not
+        else {
+            users[key].isValid = false;
+        }
+    }
 }
 
 const authenticatedUser = (username,password)=>{ //returns boolean
@@ -15,8 +30,9 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  
+    // Username and password - required by the body
+    const {username, password} = req.body;
 });
 
 // Add a book review
