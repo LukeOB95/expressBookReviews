@@ -9,40 +9,32 @@ const isbnNumber = require("./booksdb.js").isbn;
 // Registering a new user
 public_users.post("/register", (req,res) => {
     
-    // Username and password - required by the body
-    const {username, password} = req.body;
+    // Username and Password - required by body
+    const username = req.body.username;
+    const password = req.body.password;
 
-    // What if the user already exists?
-    if (username.isValid === false)
+    // Is either field empty?
+    if (username && password)
     {
-        // Return an error message
-        return res.status(400).json({message: `User already exists.`});
+        // If the username is valid
+        if (isValid(username))
+        {
+            // Add the user to the users array
+            users.push({"username": username, "password": password})
+            {
+                // Send message of success
+                res.status(200).json({message: "User successfully added. Login now permitted."});
+            }
+        }
+        // Else if it is not
+        else {
+            // Return message of failure
+            res.status(404).json({message: "This username already exists."});
+        }
     }
 
-    // What if the username is not provided?
-    else if (username === null)
-    {
-        // Return an error message
-        return res.status(400).json({message: `Username field cannot be left empty.`});
-    }
-
-    // What if the password is not provided?
-    else if (password === null)
-    {
-        // Return an error message
-        return res.status(400).json({message: `Password field cannot be left empty.`});
-    }
-
-    // But if they don't and the password field is not empty
-    else if (username.isValid === true | password != null) {
-        
-        users.push({
-        "username": req.query.username,
-        "password": req.query.password
-    });
-        // Return message of success
-        return res.status(200).json({message: username + " successfully added!"});
-    }
+    // If either field is left blank
+    return res.status(404).json({message: "Unable to register user. Neither field can be left blank."});
 });
 
 // Get the book list available in the shop
