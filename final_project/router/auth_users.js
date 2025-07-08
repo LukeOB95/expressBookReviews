@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
 const regd_users = express.Router();
+const reviews = require("./booksdb.js").reviews;
 
 let users = [];
 
@@ -32,7 +33,7 @@ const authenticatedUser = (username,password)=>{
     /* Filter users array to see if there are any whose 
     credentials match those in the list */
     let validUsers = users.filter((user) => {
-        return (user.username === username && user.passowrd === password);
+        return (user.username === username && user.password === password);
     });
 
     // If a valid user can be found
@@ -50,7 +51,7 @@ const authenticatedUser = (username,password)=>{
 }
 
 //only registered users can login
-regd_users.post("/customer/login", (req,res) => {
+regd_users.post("/login", (req,res) => {
   
     // Username and password - again, needed by the body
     const username = req.body.username;
@@ -84,11 +85,36 @@ regd_users.post("/customer/login", (req,res) => {
     }
 });
 
-
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+
+    // Review - must be a request query
+    const review = req.query.review;
+    
+    let thisReview = users[review];
+
+    // Review List - For adding the review to
+    const reviewList = books.reviews;
+
+    // ISBN Number - For specifying the book we want to review
+    const isbnNumber = books.isbn;
+
+    // If the user is logged in
+    if (req.session.authorization)
+    {
+        // If the review exists
+        if (thisReview)
+        {
+            // Update it
+            users[review] = thisReview;
+        }
+
+        // But if it doesn't
+        else {
+            reviewList.add(user.username + " : " + review);
+        }
+    }
+
 });
 
 module.exports.authenticated = regd_users;
