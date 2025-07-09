@@ -89,32 +89,23 @@ regd_users.post("/login", (req,res) => {
 regd_users.put("/auth/review/:isbn", (req, res) => {
 
     // Review - must be a request query
-    const review = req.query.review;
+    const review = req.body.review;
     
-    let thisReview = users[review];
-
-    // Review List - For adding the review to
-    const reviewList = books.reviews;
+    // Username
+    const username = req.session.authorization.username;
 
     // ISBN Number - For specifying the book we want to review
-    const isbnNumber = books.isbn;
+    const isbnNumber = req.params.isbn;
 
-    // If the user is logged in
-    if (req.session.authorization)
+    // Book object
+    const book = books[isbnNumber];
+
+    // Is the user logged in?
+    if (username)
     {
-        // If the review exists
-        if (thisReview)
-        {
-            // Update it
-            users[review] = thisReview;
-        }
-
-        // But if it doesn't
-        else {
-            reviewList.add(user.username + " : " + review);
-        }
+        book.reviews[username] = review;
+        res.status(200).json({message: "Review successfully added / updated."});
     }
-
 });
 
 module.exports.authenticated = regd_users;
