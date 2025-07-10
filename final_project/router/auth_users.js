@@ -108,6 +108,29 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     }
 });
 
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+
+    // Review - must be a request query
+    const review = req.body.review;
+    
+    // Username
+    const username = req.session.authorization.username;
+
+    // ISBN Number - For specifying the book we want to review
+    const isbnNumber = req.params.isbn;
+
+    // Book object
+    const book = books[isbnNumber];
+
+    // Is the user logged in?
+    if (username)
+    {
+        delete(book.reviews[username]);
+        res.status(200).json({message: "Review successfully deleted."});
+    }
+});
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
